@@ -4,6 +4,7 @@ import Property from "@/models/Property";
 import cloudinary from "@/lib/cloudinary";
 import { getServerSession } from "next-auth";
 import mongoose from "mongoose";
+import User from "@/models/User";
 
 export async function POST(req: Request) {
   try {
@@ -14,12 +15,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    console.log("Parsing body...");
     const body = await req.json();
 
     const { title, description, price, location, category, images } = body;
 
-    console.log("Uploading images...");
     const uploadedImages = [];
 
     console.log(process.env.CLOUDINARY_CLOUD_NAME);
@@ -39,8 +38,8 @@ export async function POST(req: Request) {
       location,
       category,
       images: uploadedImages,
-      // listedBy: session?.user?.id,
-      listedBy: new mongoose.Types.ObjectId(),
+      listedBy: session?.user?.id,
+      // listedBy: new mongoose.Types.ObjectId(),
     });
 
     return NextResponse.json(property);
