@@ -17,7 +17,7 @@ export default function PropertyCard({property}: any){
             </p>
 
             <p className="font-bold mt-2">
-            ₹ {property.price}
+            ₹ {property.price.toLocaleString("en-IN")}
             </p>
 
         </div>
