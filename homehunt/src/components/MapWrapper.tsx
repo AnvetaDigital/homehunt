@@ -10,25 +10,35 @@ const Map = dynamic(() => import("./Map"), {
 
 export default function MapWrapper({ properties }: any) {
   const [selectedLocation, setSelectedLocation] = useState<any>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const handleSelect = (property: any) => {
+    const coords = property.location?.coordinates;
+    if (coords?.lat && coords?.lng) {
+      setSelectedLocation(coords);
+      setSelectedId(property._id);
+    }
+  };
 
   return (
-    <>
-      {/* Pass click handler to list */}
-      <PropertyList
-        properties={properties}
-        // onSelect={(property: any) => {
-        //   const coords = property.location?.coordinates;
-        //   if (coords?.lat && coords?.lng) {
-        //     setSelectedLocation(coords);
-        //   }
-        // }}
+    <div className="flex gap-6">
+      {/* Map */}
+      <div className="w-1/2">
+        <Map
+          properties={properties}
+          selectedLocation={selectedLocation}
+          selectedId={selectedId}
+        />
+      </div>
 
-        onSelect={(property: any) =>
-          setSelectedLocation(property.location.coordinates)
-        }
-      />
-
-      <Map properties={properties} selectedLocation={selectedLocation} />
-    </>
+      {/* Property List */}
+      <div className="w-1/2 h-125 overflow-y-auto">
+        <PropertyList
+          properties={properties}
+          onSelect={handleSelect}
+          selectedId={selectedId}
+        />
+      </div>
+    </div>
   );
 }
