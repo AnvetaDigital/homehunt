@@ -13,7 +13,6 @@ A modern real estate listing & property finder platform where users can explore,
 ## 🛠️ Tech Stack
 - Next.js (App Router)
 - MongoDB Atlas
-- Prisma / Mongoose (TBD)
 - Leaflet.js
 - Cloudinary
 - Tailwind CSS
