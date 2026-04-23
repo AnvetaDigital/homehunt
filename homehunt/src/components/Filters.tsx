@@ -40,18 +40,29 @@ export default function Filters() {
     router.push(`/properties?${params.toString()}`);
   };
 
+ const clearFilters = () => {
+  setCity("");
+  setCategory("");
+  setMinPrice("");
+  setMaxPrice("");
+
+  router.replace("/properties");
+};
+
   return (
     <div className="flex gap-4 mb-4">
       <input
         type="text"
         placeholder="City"
         className="border p-2"
+        value={city}
         onChange={(e) => setCity(e.target.value)}
       />
 
       <select
         className="border p-2"
         onChange={(e) => setCategory(e.target.value)}
+        value={category}
       >
         <option value="">All</option>
         <option value="apartment">Apartment</option>
@@ -65,6 +76,7 @@ export default function Filters() {
         type="number"
         placeholder="Min Price"
         className="border p-2"
+        value={minPrice}
         onChange={(e) => setMinPrice(e.target.value)}
       />
 
@@ -72,11 +84,19 @@ export default function Filters() {
         type="number"
         placeholder="Max Price"
         className="border p-2"
+        value={maxPrice}
         onChange={(e) => setMaxPrice(e.target.value)}
       />
 
       <button onClick={applyFilters} className="bg-black text-white px-4">
         Apply
+      </button>
+
+      <button
+      onClick={clearFilters}
+      className="bg-gray-300 px-4 py-2 rounded ml-2"
+      >
+        Clear Filters
       </button>
     </div>
   );
