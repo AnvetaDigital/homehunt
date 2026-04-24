@@ -4,8 +4,8 @@ import PropertyCard from "./PropertyCard";
 
 export default function PropertyList({
   properties,
-  onSelect,
   selectedId,
+  onShowMap
 }: any) {
   if (!properties || properties.length === 0) {
     return <p>No properties found</p>;
@@ -17,14 +17,17 @@ export default function PropertyList({
         <div
           id={`property-${property._id}`}
           key={property._id}
-          onClick={() => onSelect(property)}
           className={`cursor-pointer rounded p-2 border ${
             selectedId === property._id
               ? "border-blue-500 shadow-lg"
               : "border-gray-200"
           }`}
         >
-          <PropertyCard property={property} />
+          <PropertyCard
+          key={property._id}
+          property={property} 
+          onShowMap={onShowMap}
+          />
         </div>
       ))}
     </div>
