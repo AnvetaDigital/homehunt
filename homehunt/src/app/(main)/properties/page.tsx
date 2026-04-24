@@ -1,6 +1,7 @@
 import Filters from "@/components/Filters";
 import Pagination from "@/components/Pagination";
 import MapWrapper from "@/components/MapWrapper";
+import User from "@/models/User";
 
 type Props = {
   searchParams: Promise<Record<string, string>>;
