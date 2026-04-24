@@ -20,9 +20,15 @@ export default function MapWrapper({ properties }: any) {
     }
   };
 
+  const handleShowMap = (property: any) => {
+    setSelectedLocation(property.location.coordinates);
+    setSelectedId(property._id);
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="flex gap-6">
-      {/* Map */}
       <div className="w-1/2">
         <Map
           properties={properties}
@@ -31,12 +37,12 @@ export default function MapWrapper({ properties }: any) {
         />
       </div>
 
-      {/* Property List */}
       <div className="w-1/2 h-125 overflow-y-auto">
         <PropertyList
           properties={properties}
           onSelect={handleSelect}
           selectedId={selectedId}
+          onShowMap={handleShowMap}
         />
       </div>
     </div>
