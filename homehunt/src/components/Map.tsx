@@ -9,7 +9,6 @@ import {
 } from "react-leaflet";
 import { useEffect, useRef } from "react";
 import L from "leaflet";
-import MarkerClusterGroup from "react-leaflet-cluster";
 import "leaflet/dist/leaflet.css";
 
 // Fix marker icons
@@ -24,7 +23,7 @@ L.Icon.Default.mergeOptions({
     "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
 });
 
-// Default icon
+// Icons
 const defaultIcon = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
   iconSize: [25, 41],
@@ -74,20 +73,20 @@ export default function Map({
 
       <FlyToLocation location={selectedLocation} />
 
-      <MarkerClusterGroup>
-        {properties.map((property: any) => {
-          const lat = property.location?.coordinates?.lat;
-          const lng = property.location?.coordinates?.lng;
+      {properties.map((property: any) => {
+        const lat = property.location?.coordinates?.lat;
+        const lng = property.location?.coordinates?.lng;
 
-          if (!lat || !lng) return null;
+        // ✅ safety check
+        if (!lat || !lng || isNaN(lat) || isNaN(lng)) return null;
 
-          const isSelected = selectedId === property._id;
+        const isSelected = selectedId === property._id;
 
-          return (
-            <Marker
-              key={property._id}
-              position={[lat, lng]}
-              icon={isSelected ? selectedIcon : defaultIcon}
+        return (
+          <Marker
+            key={property._id}
+            position={[lat, lng]}
+            icon={isSelected ? selectedIcon : defaultIcon}
               ref={(ref) => {
                 if (ref) markerRefs.current[property._id] = ref;
               }}
@@ -104,20 +103,19 @@ export default function Map({
                   }
                 },
               }}
-            >
-              <Popup>
-                <div>
+          >
+            <Popup>
+              <div>
                   <h3 className="font-semibold">{property.title}</h3>
                   <p>₹ {property.price.toLocaleString("en-IN")}</p>
                   <p className="text-sm text-gray-500">
                     {property.location?.city}
                   </p>
-                </div>
-              </Popup>
-            </Marker>
-          );
-        })}
-      </MarkerClusterGroup>
+              </div>
+            </Popup>
+          </Marker>
+        );
+      })}
     </MapContainer>
   );
 }
