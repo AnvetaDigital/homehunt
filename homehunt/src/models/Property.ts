@@ -28,7 +28,7 @@ images: [
     },
 ],
 
-amenties: [String],
+amenities: [String],
 
 bedrooms: Number,
 bathrooms: Number,
