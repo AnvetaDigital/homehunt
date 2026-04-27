@@ -1,18 +1,23 @@
 "use client";
 
 import { signIn, signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 
 export default function AuthButton() {
   const { data: session } = useSession();
 
   if (session) {
-    return(
+    return (
       <div className="flex items-center gap-4">
-        <img
-          src={session.user?.image || ""}
-          className="w-8 h-8 rounded-full"
-        />
-        <p className="text-sm">{session.user?.name}</p>
+        <p className="w-7 h-7">
+          {session.user?.name || ""}
+        </p>
+        
+        <Link href="/properties/add">
+          <button className="bg-green-600 text-white px-3 py-1 rounded">
+            + Add Property
+          </button>
+        </Link>
 
         <button
           onClick={() => signOut()}
@@ -29,7 +34,7 @@ export default function AuthButton() {
       onClick={() => signIn("google")}
       className="bg-blue-500 text-white px-4 py-2 rounded"
     >
-      Login with Google
+      Login
     </button>
   );
 }
