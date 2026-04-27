@@ -5,57 +5,105 @@ import cloudinary from "@/lib/cloudinary";
 import { getServerSession } from "next-auth";
 import mongoose from "mongoose";
 import User from "@/models/User";
+import { z } from "zod";
+import { authOptions } from "@/lib/auth";
+import { getCoordinates } from "@/lib/geocode";
+
+// Validation Schema
+const PropertySchema = z.object({
+  title: z.string().min(3),
+  description: z.string().min(10),
+  price: z.number().positive(),
+  category: z.enum(["apartment", "villa", "plot", "commercial"]),
+  location: z.object({
+    city: z.string().min(2),
+  }),
+  images: z
+    .array(
+      z.object({
+        url: z.string().url(),
+        public_id: z.string(),
+      }),
+    )
+    .min(1),
+});
 
 export async function POST(req: Request) {
   try {
     await connectDB();
-    const session = await getServerSession();
 
-    if (!session || !session.user || !session.user.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      console.error("Unauthorized request");
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 },
+      );
     }
 
     const body = await req.json();
 
-    const { title, description, price, location, category, images } = body;
+    const parsed = PropertySchema.safeParse(body);
 
-    const uploadedImages = [];
-
-    console.log(process.env.CLOUDINARY_CLOUD_NAME);
-
-    for (let img of images) {
-      const res = await cloudinary.uploader.upload(img);
-      uploadedImages.push({
-        url: res.secure_url,
-        public_id: res.public_id,
-      });
+    if (!parsed.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Validation failed",
+          details: parsed.error.flatten(),
+        },
+        { status: 400 },
+      );
     }
 
-    const property = await Property.create({
+     const { title, description, price, category, location, images } =
+      parsed.data;
+
+      const coords = await getCoordinates(location.city);
+
+     if (!coords) {
+      return NextResponse.json(
+        { error: "Could not find location" },
+        { status: 400 }
+      );
+    }
+
+     const property = await Property.create({
       title,
       description,
       price,
-      location,
       category,
-      images: uploadedImages,
-      listedBy: session?.user?.id,
-      // listedBy: new mongoose.Types.ObjectId(),
+      location: {
+        city: location.city,
+        coordinates: coords,
+      },
+      images,
+      listedBy: new mongoose.Types.ObjectId(session.user.id),
     });
 
-    return NextResponse.json(property);
-  } catch (error) {
-    console.error("ERROR:", error);
     return NextResponse.json(
-      { error: "Failed to create property" },
+      {
+        success: true,
+        data: property,
+      },
+      { status: 201 },
+    );
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || "Internal Server Error",
+      },
       { status: 500 },
     );
   }
 }
 
-export async function GET(req: Request){
-  try{
+export async function GET(req: Request) {
+  try {
     await connectDB();
-    const {searchParams} = new URL(req.url);
+    const { searchParams } = new URL(req.url);
 
     //Filtering parameters
     const city =searchParams.get("city");
