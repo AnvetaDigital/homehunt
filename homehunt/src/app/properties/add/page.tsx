@@ -41,8 +41,6 @@ export default function AddPropertyPage() {
     const file = e.target.files[0];
     if (!file) return;
 
-    console.log("Selected file:", file);
-
     if (file.size > 2 * 1024 * 1024) {
       alert("Max file size is 2MB");
       return;
@@ -54,7 +52,6 @@ export default function AddPropertyPage() {
       });
 
       const sigData = await sigRes.json();
-      console.log("Signature response:", sigData);
 
       const { timestamp, signature, apiKey, cloudName, folder } = sigData;
 
@@ -75,7 +72,6 @@ export default function AddPropertyPage() {
       );
 
       const data = await uploadRes.json();
-      console.log("Cloudinary response:", data);
 
       if (!uploadRes.ok) {
         console.error("Upload failed:", data);
@@ -136,7 +132,6 @@ export default function AddPropertyPage() {
       });
 
       const data = await res.json();
-      console.log("API response:", data);
 
       if (!res.ok) {
         alert(data.error || "Failed to add property");

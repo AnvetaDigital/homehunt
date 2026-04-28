@@ -33,8 +33,6 @@ export async function POST() {
       process.env.CLOUDINARY_API_SECRET
     );
 
-    console.log("Signature:", signature);
-
     return NextResponse.json({
       timestamp,
       signature,

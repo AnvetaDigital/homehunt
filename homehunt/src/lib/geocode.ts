@@ -11,14 +11,12 @@ export async function getCoordinates(city: string) {
     console.log("Geocode response:", data);
 
     if (!data.results || data.results.length === 0) {
-      console.log("No coordinates found");
       return null;
     }
 
     const lat = data.results[0].geometry.lat;
     const lng = data.results[0].geometry.lng;
 
-    console.log("Coordinates:", lat, lng);
 
     return { lat, lng };
   } catch (err) {
