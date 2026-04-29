@@ -69,7 +69,10 @@ export async function PUT(
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Unauthorized" }, 
+        { status: 401 }
+      );
     }
 
     const { id: propertyId } = await context.params;
@@ -104,6 +107,28 @@ export async function PUT(
     }
 
     let updateData: any = { ...parsed.data };
+
+     // HANDLE IMAGE DELETION
+    if (parsed.data.images) {
+      const existingImages = property.images || [];
+
+      const incomingIds = parsed.data.images.map(
+        (img: any) => img.public_id
+      );
+
+      const imagesToDelete = existingImages.filter(
+        (img: any) => !incomingIds.includes(img.public_id)
+      );
+
+      for (let img of imagesToDelete) {
+        try {
+          await cloudinary.uploader.destroy(img.public_id);
+          console.log("Deleted:", img.public_id);
+        } catch (err) {
+          console.error("Delete failed:", img.public_id);
+        }
+      }
+    }
 
     //Handle city update
     if (parsed.data.location?.city) {
