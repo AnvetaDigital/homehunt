@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Property from "@/models/Property";
-import cloudinary from "@/lib/cloudinary";
 import { getServerSession } from "next-auth";
 import mongoose from "mongoose";
 import User from "@/models/User";
