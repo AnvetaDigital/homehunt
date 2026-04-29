@@ -138,7 +138,7 @@ export default function AddPropertyPage() {
         return;
       }
 
-      alert("✅ Property added successfully!");
+      alert("Property added successfully!");
 
       setForm({
         title: "",

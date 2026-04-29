@@ -77,7 +77,7 @@ export default function Map({
         const lat = property.location?.coordinates?.lat;
         const lng = property.location?.coordinates?.lng;
 
-        // ✅ safety check
+        // safety check
         if (!lat || !lng || isNaN(lat) || isNaN(lng)) return null;
 
         const isSelected = selectedId === property._id;

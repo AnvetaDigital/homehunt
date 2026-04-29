@@ -13,11 +13,11 @@ export default function Filters() {
   const [maxPrice, setMaxPrice] = useState("");
 
   const applyFilters = () => {
-    // ✅ Convert to numbers safely
+    // Convert to numbers safely
     const min = minPrice ? Number(minPrice) : null;
     const max = maxPrice ? Number(maxPrice) : null;
 
-    // ✅ Validation
+    // Validation
     if (min !== null && max !== null && min > max) {
       alert("Min price cannot be greater than max price");
       return;
