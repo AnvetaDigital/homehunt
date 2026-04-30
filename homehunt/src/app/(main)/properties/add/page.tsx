@@ -1,7 +1,9 @@
 "use client";
 
 import { useSession, signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function AddPropertyPage() {
   const { data: session, status } = useSession();
@@ -19,6 +21,8 @@ export default function AddPropertyPage() {
   >([]);
 
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
 
   if (status === "loading") return <p>Loading...</p>;
 
@@ -138,16 +142,9 @@ export default function AddPropertyPage() {
         return;
       }
 
-      alert("Property added successfully!");
-
-      setForm({
-        title: "",
-        description: "",
-        price: "",
-        city: "",
-        category: "",
-      });
-      setImages([]);
+      toast.success("Property created successfully");
+      router.push(`/properties/${data.data._id}`);
+      
     } catch (err) {
       console.error("Submit error:", err);
       alert("Something went wrong");
