@@ -54,10 +54,17 @@ export default function EditPage() {
 
   // Upload image
   const handleImageUpload = async (e: any) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = Array.from(e.target.files);
+
+    if (!files.length) return;
+
+    if (files.length > 5) {
+      alert("Max 5 images allowed");
+      return;
+    }
 
     try {
+      //get signature
       const sigRes = await fetch("/api/cloudinary-signature", {
         method: "POST",
       });
@@ -65,45 +72,48 @@ export default function EditPage() {
       const { timestamp, signature, apiKey, cloudName, folder } =
         await sigRes.json();
 
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("api_key", apiKey);
-      formData.append("timestamp", timestamp);
-      formData.append("signature", signature);
-      formData.append("folder", folder);
+      //upload all images in parallel
+      const uploadPromises = files.map(async (file: any) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("api_key", apiKey);
+        formData.append("timestamp", timestamp);
+        formData.append("signature", signature);
+        formData.append("folder", folder);
 
-      const uploadRes = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+        const res = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          {
+            method: "POST",
+            body: formData,
+          },
+        );
 
-      const data = await uploadRes.json();
+        const data = await res.json();
 
-      console.log("Uploaded image:", data);
-
-      setImages((prev) => [
-        ...prev,
-        {
+        return {
           url: data.secure_url,
           public_id: data.public_id,
-        },
-      ]);
+        };
+      });
 
-      e.target.value = ""; 
+      const uploadedImages = await Promise.all(uploadPromises);
+
+      //add all images at once
+      setImages((prev) => [...prev, ...uploadedImages]);
+
+      console.log("Uploaded images...", uploadedImages);
+
+      e.target.value = ""; //reset input
     } catch (err) {
       console.error("Upload error:", err);
-      alert("Image upload failed");
+      alert("Image Upload failed");
     }
   };
 
   // Remove image (UI only)
   const handleRemoveImage = (public_id: string) => {
-    setImages((prev) =>
-      prev.filter((img) => img.public_id !== public_id)
-    );
+    setImages((prev) => prev.filter((img) => img.public_id !== public_id));
   };
 
   // Submit
@@ -153,18 +163,14 @@ export default function EditPage() {
         <input
           placeholder="Title"
           value={form.title}
-          onChange={(e) =>
-            setForm({ ...form, title: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, title: e.target.value })}
           className="border p-2 w-full"
         />
 
         <textarea
           placeholder="Description"
           value={form.description}
-          onChange={(e) =>
-            setForm({ ...form, description: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, description: e.target.value })}
           className="border p-2 w-full"
         />
 
@@ -172,27 +178,21 @@ export default function EditPage() {
           type="number"
           placeholder="Price"
           value={form.price}
-          onChange={(e) =>
-            setForm({ ...form, price: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, price: e.target.value })}
           className="border p-2 w-full"
         />
 
         <input
           placeholder="City"
           value={form.city}
-          onChange={(e) =>
-            setForm({ ...form, city: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, city: e.target.value })}
           className="border p-2 w-full"
         />
 
         {/* CATEGORY DROPDOWN */}
         <select
           value={form.category}
-          onChange={(e) =>
-            setForm({ ...form, category: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, category: e.target.value })}
           className="border p-2 w-full"
         >
           <option value="">Select Category</option>
@@ -203,16 +203,18 @@ export default function EditPage() {
         </select>
 
         {/* IMAGE UPLOAD */}
-        <input type="file" onChange={handleImageUpload} />
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={handleImageUpload}
+        />
 
         {/* IMAGE PREVIEW */}
         <div className="flex gap-2 flex-wrap">
           {images.map((img) => (
             <div key={img.public_id} className="relative">
-              <img
-                src={img.url}
-                className="w-20 h-20 object-cover rounded"
-              />
+              <img src={img.url} className="w-20 h-20 object-cover rounded" />
 
               <button
                 type="button"
@@ -225,10 +227,7 @@ export default function EditPage() {
           ))}
         </div>
 
-        <button
-          disabled={loading}
-          className="bg-black text-white px-4 py-2"
-        >
+        <button disabled={loading} className="bg-black text-white px-4 py-2">
           {loading ? "Updating..." : "Update"}
         </button>
       </form>
