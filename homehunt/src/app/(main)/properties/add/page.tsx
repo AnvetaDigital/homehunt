@@ -40,67 +40,67 @@ export default function AddPropertyPage() {
     );
   }
 
-  // Upload Image 
+  // Upload Image
   const handleImageUpload = async (e: any) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = Array.from(e.target.files);
 
-    if (file.size > 2 * 1024 * 1024) {
-      alert("Max file size is 2MB");
+    if (!files.length) return;
+
+    if (files.length > 5) {
+      alert("Max 5 images allowed");
       return;
     }
 
     try {
+      //get signature
       const sigRes = await fetch("/api/cloudinary-signature", {
         method: "POST",
       });
 
-      const sigData = await sigRes.json();
+      const { timestamp, signature, apiKey, cloudName, folder } =
+        await sigRes.json();
 
-      const { timestamp, signature, apiKey, cloudName, folder } = sigData;
+      //upload all images in parallel
+      const uploadPromises = files.map(async (file: any) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("api_key", apiKey);
+        formData.append("timestamp", timestamp);
+        formData.append("signature", signature);
+        formData.append("folder", folder);
 
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("api_key", apiKey);
-      formData.append("timestamp", timestamp);
-      formData.append("signature", signature);
-      formData.append("folder", folder);
+        const res = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          {
+            method: "POST",
+            body: formData,
+          },
+        );
 
+        const data = await res.json();
 
-      const uploadRes = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      const data = await uploadRes.json();
-
-      if (!uploadRes.ok) {
-        console.error("Upload failed:", data);
-        alert("Image upload failed");
-        return;
-      }
-
-      if (!data.secure_url || !data.public_id) {
-        console.error("Invalid Cloudinary response");
-        alert("Invalid image response");
-        return;
-      }
-
-      setImages((prev) => [
-        ...prev,
-        {
+        return {
           url: data.secure_url,
           public_id: data.public_id,
-        },
-      ]);
+        };
+      });
 
+      const uploadedImages = await Promise.all(uploadPromises);
+
+      //add all images at once
+      setImages((prev) => [...prev, ...uploadedImages]);
+
+      console.log("Uploaded images...", uploadedImages);
+
+      e.target.value = ""; //reset input
     } catch (err) {
       console.error("Upload error:", err);
-      alert("Upload failed");
+      alert("Image Upload failed");
     }
+  };
+
+  const handleRemoveImage = (public_id: string) => {
+    setImages((prev) => prev.filter((img) => img.public_id !== public_id));
   };
 
   // Submit
@@ -125,7 +125,6 @@ export default function AddPropertyPage() {
       images,
     };
 
-
     try {
       const res = await fetch("/api/properties", {
         method: "POST",
@@ -144,7 +143,6 @@ export default function AddPropertyPage() {
 
       toast.success("Property created successfully");
       router.push(`/properties/${data.data._id}`);
-      
     } catch (err) {
       console.error("Submit error:", err);
       alert("Something went wrong");
@@ -152,7 +150,6 @@ export default function AddPropertyPage() {
       setLoading(false);
     }
   };
-
   return (
     <div className="max-w-xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Add Property</h1>
@@ -162,18 +159,14 @@ export default function AddPropertyPage() {
           placeholder="Title"
           className="border p-2 w-full"
           value={form.title}
-          onChange={(e) =>
-            setForm({ ...form, title: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, title: e.target.value })}
         />
 
         <textarea
           placeholder="Description"
           className="border p-2 w-full"
           value={form.description}
-          onChange={(e) =>
-            setForm({ ...form, description: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, description: e.target.value })}
         />
 
         <input
@@ -181,26 +174,20 @@ export default function AddPropertyPage() {
           placeholder="Price"
           className="border p-2 w-full"
           value={form.price}
-          onChange={(e) =>
-            setForm({ ...form, price: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, price: e.target.value })}
         />
 
         <input
           placeholder="City"
           className="border p-2 w-full"
           value={form.city}
-          onChange={(e) =>
-            setForm({ ...form, city: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, city: e.target.value })}
         />
 
         <select
           className="border p-2 w-full"
           value={form.category}
-          onChange={(e) =>
-            setForm({ ...form, category: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, category: e.target.value })}
         >
           <option value="">Select Category</option>
           <option value="apartment">Apartment</option>
@@ -209,22 +196,30 @@ export default function AddPropertyPage() {
           <option value="commercial">Commercial</option>
         </select>
 
-        <input type="file" accept="image/*" onChange={handleImageUpload} />
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={handleImageUpload}
+        />
 
         <div className="flex gap-2 flex-wrap">
-          {images.map((img, i) => (
-            <img
-              key={i}
-              src={img.url}
-              className="w-20 h-20 object-cover rounded"
-            />
+          {images.map((img) => (
+            <div key={img.public_id} className="relative">
+              <img src={img.url} className="w-20 h-20 object-cover rounded" />
+
+              <button
+                type="button"
+                onClick={() => handleRemoveImage(img.public_id)}
+                className="absolute top-0 right-0 bg-red-500 text-white px-1 text-xs"
+              >
+                X
+              </button>
+            </div>
           ))}
         </div>
 
-        <button
-          disabled={loading}
-          className="bg-black text-white px-4 py-2"
-        >
+        <button disabled={loading} className="bg-black text-white px-4 py-2">
           {loading ? "Submitting..." : "Submit"}
         </button>
       </form>
