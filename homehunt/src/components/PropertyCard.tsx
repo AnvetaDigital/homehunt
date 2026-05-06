@@ -1,44 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation"
-import { useTransition } from "react";
+import FavoriteButton from "./FavoriteButton";
 
 export default function PropertyCard({ property, onShowMap }: any) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-
-  const handleDelete = async () => {
-    const confirmDelete = confirm("Delete this property?");
-
-    if(!confirmDelete) return;
-
-    try{
-      const res = await fetch(`/api/properties/${property._id}`, {
-        method: "DELETE",
-      });
-
-      const data = await res.json();
-
-      if(!res.ok){
-        alert(data.error);
-        return;
-      }
-
-      alert("Deleted successfully");
-
-      //Refresh server data
-      startTransition(()=>{
-        router.refresh();
-      });
-    }catch(err){
-      console.error(err);
-      alert("Delete failed");
-    }
-  };
 
   return (
-    <div className="border rounded-lg p-4 shadow">
+    <div className="border rounded-lg p-4 shadow relative">
+
+      <div className="absolute top-2 right-2 text-xl">
+        <FavoriteButton propertyId={property._id} />
+      </div>
 
       <img
         src={property.images?.[0]?.url}
@@ -72,23 +44,6 @@ export default function PropertyCard({ property, onShowMap }: any) {
           className="bg-gray-200 px-3 py-1 rounded"
         >
           Show on Map
-        </button>
-
-        <button
-        className="bg-blue-500 text-white px-3 py-1 rounded"
-        onClick={()=>
-          router.push(`/properties/edit/${property._id}`)
-        }
-        >
-          Edit
-        </button>
-
-        <button
-        onClick={handleDelete}
-        disabled={isPending}
-        className="bg-red-500 text-white px-3 py-1 rounded"
-        >
-          {isPending ? "Deleting..." : "Delete"}
         </button>
       </div>
     </div>
