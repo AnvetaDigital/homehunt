@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function EditPage() {
   const router = useRouter();
@@ -144,7 +145,7 @@ export default function EditPage() {
         return;
       }
 
-      alert("Property updated!");
+      toast.success("Property updated successfully!")
       router.push("/properties");
       router.refresh();
     } catch (err) {
