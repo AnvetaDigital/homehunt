@@ -26,9 +26,6 @@ console.log("ID:", id);
       {/* TITLE + PRICE */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">{property.title}</h1>
-        <p className="text-xl font-semibold text-green-600">
-          ₹ {property.price.toLocaleString()}
-        </p>
       </div>
 
       {/* IMAGE GALLERY */}
@@ -39,6 +36,9 @@ console.log("ID:", id);
         <p><strong>City:</strong> {property.location?.city}</p>
         <p><strong>Category:</strong> {property.category}</p>
         <p><strong>Area:</strong> {property.area || "-"} sqft</p>
+           <p className="text-xl font-semibold text-black-600">
+          ₹ {property.price.toLocaleString()}
+        </p>
       </div>
 
       {/* DESCRIPTION */}
