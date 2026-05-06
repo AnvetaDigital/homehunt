@@ -9,16 +9,17 @@ export default function AuthButton() {
   if (session) {
     return (
       <div className="flex items-center gap-4">
-        <p className="w-7 h-7">
-          {session.user?.name || ""}
-        </p>
-        
         <Link href="/properties/add">
           <button className="bg-green-600 text-white px-3 py-1 rounded">
             + Add Property
           </button>
         </Link>
 
+        <Link href="/favorites">
+          <button className="bg-pink-500 text-white px-3 py-1 rounded">
+            ❤️ Favorites
+          </button>
+        </Link>
         <button
           onClick={() => signOut()}
           className="bg-red-500 text-white px-3 py-1 rounded"
