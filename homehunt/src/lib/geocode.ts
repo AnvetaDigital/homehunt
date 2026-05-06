@@ -8,8 +8,6 @@ export async function getCoordinates(city: string) {
 
     const data = await res.json();
 
-    console.log("Geocode response:", data);
-
     if (!data.results || data.results.length === 0) {
       return null;
     }
