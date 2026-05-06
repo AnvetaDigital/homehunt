@@ -141,7 +141,7 @@ export default function AddPropertyPage() {
         return;
       }
 
-      toast.success("Property created successfully");
+      toast.success("Property added successfully!");
       router.push(`/properties/${data.data._id}`);
     } catch (err) {
       console.error("Submit error:", err);
