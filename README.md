@@ -195,33 +195,23 @@ http://localhost:3000
 
 # 📸 Screenshots
 
-- Home Page
-![alt text](homehunt/public/screenshots/add_property_page.png)
+### 🏠 Home Page
+![Home Page](./public/screenshots/home.png)
 
+### 📑 Properties Page
+![Properties Page](./public/screenshots/properties.png)
 
-- Properties Page
-![alt text](homehunt/public/screenshots/Properties_Page.png)
+### 🏡 Property Details
+![Property Details](./public/screenshots/property-detail.png)
 
+### ❤️ Favorites Page
+![Favorites Page](./public/screenshots/favorites.png)
 
+### ➕ Add Property Page
+![Add Property Page](./public/screenshots/add-property.png)
 
-- Property Details
-![alt text](homehunt/public/screenshots/Property_Detail.png)
-
-
-
-- Favorites Page
-![alt text](homehunt/public/screenshots/favorites_page.png)
-
-
-
-- Add Property Page
-![alt text](homehunt/public/screenshots/add_property_page.png)
-
-
-
-- Map View
-![alt text](homehunt/public/screenshots/Map_view.png)
-
+### 🗺️ Map View
+![Map View](./public/screenshots/map-view.png)
 ---
 
 # 🔒 Security Features
