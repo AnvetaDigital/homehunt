@@ -24,7 +24,6 @@ export default async function PropertiesPage({ searchParams }: Props) {
 
       <Filters />
 
-      {/* Map + List handled together */}
       <MapWrapper properties={data?.data || []} />
 
       <Pagination
