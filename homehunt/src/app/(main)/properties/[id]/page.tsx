@@ -1,17 +1,17 @@
 import PropertyImages from "@/components/PropertyImages";
 import PropertyActions from "@/components/PropertyActions";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
 
 export default async function PropertyDetails({ params }: Props) {
-  const { id } = await params; 
-console.log("ID:", id);
-  const res = await fetch(
-    `http://localhost:3000/api/properties/${id}`,
-    { cache: "no-store" }
-  );
+  const { id } = await params;
+  const res = await fetch(`http://localhost:3000/api/properties/${id}`, {
+    cache: "no-store",
+  });
 
   const data = await res.json();
   const property = data.data || data;
@@ -20,9 +20,11 @@ console.log("ID:", id);
     return <p className="p-6">Property not found</p>;
   }
 
+  const session = await getServerSession(authOptions);
+  const isOwner = session?.user?.id === property.listedBy?.toString();
+
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
-      
       {/* TITLE + PRICE */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">{property.title}</h1>
@@ -48,7 +50,7 @@ console.log("ID:", id);
       </div>
 
       {/* ACTION BUTTONS */}
-      <PropertyActions property={property} />
+      {isOwner && <PropertyActions property={property} />}
     </div>
   );
 }
