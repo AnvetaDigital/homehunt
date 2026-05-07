@@ -43,11 +43,12 @@ export default function AddPropertyPage() {
   // Upload Image
   const handleImageUpload = async (e: any) => {
     const files = Array.from(e.target.files);
+    const toastId = toast.loading("Uploading images...");
 
     if (!files.length) return;
 
     if (files.length > 5) {
-      alert("Max 5 images allowed");
+      toast.error("Max 5 images allowed");
       return;
     }
 
@@ -89,13 +90,11 @@ export default function AddPropertyPage() {
 
       //add all images at once
       setImages((prev) => [...prev, ...uploadedImages]);
-
-      console.log("Uploaded images...", uploadedImages);
+      toast.success("Images uploaded", { id: toastId });
 
       e.target.value = ""; //reset input
     } catch (err) {
-      console.error("Upload error:", err);
-      alert("Image Upload failed");
+      toast.error("Upload failed", { id: toastId });
     }
   };
 
@@ -107,10 +106,7 @@ export default function AddPropertyPage() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    if (images.length === 0) {
-      alert("Upload at least one image");
-      return;
-    }
+    if (!validateForm()) return;
 
     setLoading(true);
 
@@ -137,19 +133,90 @@ export default function AddPropertyPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.error || "Failed to add property");
+        toast.error(data.error || "Failed to add property");
         return;
       }
 
       toast.success("Property added successfully!");
-      router.push(`/properties/${data.data._id}`);
+
+      setTimeout(() => {
+        router.push(`/properties/${data.data._id}`);
+      }, 1200);
     } catch (err) {
-      console.error("Submit error:", err);
-      alert("Something went wrong");
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
   };
+
+  const hasAlphabet = (value: string) => {
+    return /[a-zA-Z]/.test(value);
+  };
+
+const validateForm = () => {
+  if (!form.title.trim()) {
+    toast.error("Title is required");
+    return false;
+  }
+
+  if (!hasAlphabet(form.title)) {
+    toast.error("Title must contain letters");
+    return false;
+  }
+
+  if (form.title.length < 5) {
+    toast.error("Title must be at least 5 characters");
+    return false;
+  }
+
+  if (!form.description.trim()) {
+    toast.error("Description is required");
+    return false;
+  }
+
+  if (!hasAlphabet(form.description)) {
+    toast.error("Description must contain letters");
+    return false;
+  }
+
+  if (form.description.length < 20) {
+    toast.error("Description must be at least 20 characters");
+    return false;
+  }
+
+  if (!form.price) {
+    toast.error("Price is required");
+    return false;
+  }
+
+  if (Number(form.price) <= 0) {
+    toast.error("Price must be greater than 0");
+    return false;
+  }
+
+  if (!form.city.trim()) {
+    toast.error("City is required");
+    return false;
+  }
+
+  if (!hasAlphabet(form.city)) {
+    toast.error("City must contain letters");
+    return false;
+  }
+
+  if (!form.category) {
+    toast.error("Please select a category");
+    return false;
+  }
+
+  if (images.length === 0) {
+    toast.error("Upload at least one image");
+    return false;
+  }
+
+  return true;
+};
+
   return (
     <div className="max-w-xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Add Property</h1>
@@ -219,7 +286,12 @@ export default function AddPropertyPage() {
           ))}
         </div>
 
-        <button disabled={loading} className="bg-black text-white px-4 py-2">
+        <button
+          disabled={loading}
+          className={`px-4 py-2 text-white ${
+            loading ? "bg-gray-400" : "bg-black"
+          }`}
+        >
           {loading ? "Submitting..." : "Submit"}
         </button>
       </form>
