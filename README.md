@@ -164,7 +164,7 @@ OPENCAGE_API_KEY=your_opencage_api_key
 ## 1️⃣ Clone Repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/AnvetaDigital/homehunt.git
 ```
 
 ---
@@ -195,22 +195,29 @@ http://localhost:3000
 
 # 📸 Screenshots
 
-Add screenshots after deployment:
-
 - Home Page
 ![alt text](homehunt/public/screenshots/add_property_page.png)
+
 
 - Properties Page
 ![alt text](homehunt/public/screenshots/Properties_Page.png)
 
+
+
 - Property Details
 ![alt text](homehunt/public/screenshots/Property_Detail.png)
+
+
 
 - Favorites Page
 ![alt text](homehunt/public/screenshots/favorites_page.png)
 
+
+
 - Add Property Page
 ![alt text](homehunt/public/screenshots/add_property_page.png)
+
+
 
 - Map View
 ![alt text](homehunt/public/screenshots/Map_view.png)
