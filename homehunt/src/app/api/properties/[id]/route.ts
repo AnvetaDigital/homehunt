@@ -70,7 +70,7 @@ export async function PUT(
 
     if (!session?.user?.id) {
       return NextResponse.json(
-        { error: "Unauthorized" }, 
+        { error: "Only property owner can edit this property" }, 
         { status: 401 }
       );
     }
@@ -95,7 +95,7 @@ export async function PUT(
 
     //Ownership check
     if (property.listedBy.toString() !== session.user.id) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      return NextResponse.json({ error: "Only property owner can edit this property" }, { status: 403 });
     }
 
     const body = await req.json();
@@ -123,7 +123,6 @@ export async function PUT(
       for (let img of imagesToDelete) {
         try {
           await cloudinary.uploader.destroy(img.public_id);
-          console.log("Deleted:", img.public_id);
         } catch (err) {
           console.error("Delete failed:", img.public_id);
         }
@@ -172,7 +171,7 @@ export async function DELETE(
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Only property owner can delete this property" }, { status: 401 });
     }
 
     const { id: propertyId } = await context.params;
@@ -195,7 +194,7 @@ export async function DELETE(
 
     // Ownership check
     if (property.listedBy.toString() !== session.user.id) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      return NextResponse.json({ error: "Only property owner can delete this property" }, { status: 403 });
     }
 
     // Delete images from Cloudinary
