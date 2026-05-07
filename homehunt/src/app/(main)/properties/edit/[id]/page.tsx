@@ -35,7 +35,7 @@ export default function EditPage() {
       const property = data.data || data;
 
       if (!property || property.error) {
-        alert(property?.error || "Failed to load property");
+        toast.error(property?.error || "Failed to load property");
         return;
       }
 
@@ -60,7 +60,7 @@ export default function EditPage() {
     if (!files.length) return;
 
     if (files.length > 5) {
-      alert("Max 5 images allowed");
+      toast.error("Max 5 images allowed");
       return;
     }
 
@@ -103,12 +103,10 @@ export default function EditPage() {
       //add all images at once
       setImages((prev) => [...prev, ...uploadedImages]);
 
-      console.log("Uploaded images...", uploadedImages);
-
       e.target.value = ""; //reset input
     } catch (err) {
       console.error("Upload error:", err);
-      alert("Image Upload failed");
+      toast.error("Image Upload failed");
     }
   };
 
@@ -141,7 +139,7 @@ export default function EditPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.error || "Update failed");
+        toast.error(data.error || "Update failed");
         return;
       }
 
@@ -149,8 +147,7 @@ export default function EditPage() {
       router.push("/properties");
       router.refresh();
     } catch (err) {
-      console.error("Submit error:", err);
-      alert("Something went wrong");
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
