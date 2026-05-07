@@ -1,31 +1,34 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useFavorites } from "@/context/FavoritesContext";
 import PropertyCard from "@/components/PropertyCard";
 
 export default function FavoritesPage() {
-  const [properties, setProperties] = useState([]);
+  const { favorites } = useFavorites();
+  const [allProperties, setAllProperties] = useState([]);
 
   useEffect(() => {
-    fetch("/api/favorites/list")
+    fetch("/api/properties")
       .then((res) => res.json())
-      .then((data) => setProperties(data.data || []));
+      .then((data) => setAllProperties(data.data || []));
   }, []);
 
-  if (!properties.length) {
-    return (
-      <p className="p-6 text-center text-gray-500">
-        No favorites yet ❤️
-      </p>
-    );
+  const filtered = allProperties.filter((p: any) =>
+    favorites.includes(p._id)
+  );
+
+  if (!filtered.length) {
+    return <p className="p-6 text-center">No favorites yet ❤️</p>;
   }
 
   return (
-    <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-      {properties.map((property: any) => (
+    <div className="p-15 grid grid-cols-3 gap-6">
+      {filtered.map((property: any) => (
         <PropertyCard
           key={property._id}
           property={property}
+          showMapButton={false}
         />
       ))}
     </div>

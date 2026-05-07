@@ -1,37 +1,34 @@
-import { signIn, useSession } from "next-auth/react";
-import { useState } from "react";
+"use client";
 
-export default function FavoriteButton({
-    propertyId,
-}: {
-    propertyId: string;
-}){
-    const { data: session } = useSession();
-    const [isFav, setIsFav] = useState(false);
+import { useFavorites } from "@/context/FavoritesContext";
+import { useSession, signIn } from "next-auth/react";
+import toast from "react-hot-toast";
 
-    const toggleFavorites = async() => {
-        if(!session){
-            signIn("google");
-            return;
-        }
+export default function FavoriteButton({ propertyId }: any) {
+  const { favorites, toggleFavorite } = useFavorites();
+  const { data: session } = useSession();
 
+  const isFav = favorites.includes(propertyId);
 
-        const res = await fetch("/api/favorites", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({propertyId}),
-        });
-
-        const data = await res.json();
-
-        setIsFav(data.isFavorite);
+  const handleClick = async () => {
+    if (!session) {
+      toast.error("Please login first");
+      signIn("google");
+      return;
     }
 
-    return(
-        <button onClick={toggleFavorites}>
-            {isFav ? "❤️": "🤍"}
-        </button>
-    )
+    await toggleFavorite(propertyId);
+
+    if(isFav){
+      toast("Removed from favorites 💔");
+    }else{
+      toast.success("Added to favorites ❤️");
+    }
+  };
+
+  return (
+    <button onClick={handleClick} className="text-xl cursor-pointer">
+      {isFav ? "❤️" : "🤍"}
+    </button>
+  );
 }
