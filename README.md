@@ -193,27 +193,6 @@ http://localhost:3000
 
 ---
 
-# 📸 Screenshots
-
-### 🏠 Home Page
-![Home Page](./public/screenshots/home.png)
-
-### 📑 Properties Page
-![Properties Page](./public/screenshots/properties.png)
-
-### 🏡 Property Details
-![Property Details](./public/screenshots/property-detail.png)
-
-### ❤️ Favorites Page
-![Favorites Page](./public/screenshots/favorites.png)
-
-### ➕ Add Property Page
-![Add Property Page](./public/screenshots/add-property.png)
-
-### 🗺️ Map View
-![Map View](./public/screenshots/map-view.png)
----
-
 # 🔒 Security Features
 
 - Protected API routes
