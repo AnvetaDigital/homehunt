@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Filters() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function Filters() {
 
     // Validation
     if (min !== null && max !== null && min > max) {
-      alert("Min price cannot be greater than max price");
+      toast.error("Min price cannot be greater than max price");
       return;
     }
 
