@@ -3,13 +3,17 @@
 import Link from "next/link";
 import FavoriteButton from "./FavoriteButton";
 
-export default function PropertyCard({ property, onShowMap }: any) {
+export default function PropertyCard({ property, onShowMap, showMapButton = true, isFavorite = false, onUnfavorite, }: any) {
 
   return (
-    <div className="border rounded-lg p-4 shadow relative">
+    <div className="border rounded-lg p-4 shadow relative hover:scale-105 transition">
 
       <div className="absolute top-2 right-2 text-xl">
-        <FavoriteButton propertyId={property._id} />
+        <FavoriteButton 
+        propertyId={property._id} 
+        initialFavorite={isFavorite}
+        onUnfavorite={onUnfavorite}
+        />
       </div>
 
       <img
@@ -39,12 +43,14 @@ export default function PropertyCard({ property, onShowMap }: any) {
           </button>
         </Link>
 
-        <button
-          onClick={() => onShowMap(property)}
+        {showMapButton && (
+         <button
+          onClick={() => onShowMap?.(property)}
           className="bg-gray-200 px-3 py-1 rounded"
         >
           Show on Map
         </button>
+        )}
       </div>
     </div>
   )
