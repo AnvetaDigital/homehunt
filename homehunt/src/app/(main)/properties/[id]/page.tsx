@@ -9,7 +9,7 @@ type Props = {
 
 export default async function PropertyDetails({ params }: Props) {
   const { id } = await params;
-  const res = await fetch(`http://localhost:3000/api/properties/${id}`, {
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/properties/${id}`, {
     cache: "no-store",
   });
 

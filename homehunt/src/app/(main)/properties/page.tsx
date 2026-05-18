@@ -12,7 +12,7 @@ export default async function PropertiesPage({ searchParams }: Props) {
 
   const query = new URLSearchParams(params).toString();
 
-  const res = await fetch(`http://localhost:3000/api/properties?${query}`, {
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/properties?${query}`, {
     cache: "no-store",
   });
 
