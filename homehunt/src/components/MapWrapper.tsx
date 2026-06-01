@@ -3,12 +3,13 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import PropertyList from "./PropertyList";
+import Pagination from "./Pagination";
 
 const Map = dynamic(() => import("./Map"), {
   ssr: false,
 });
 
-export default function MapWrapper({ properties }: any) {
+export default function MapWrapper({ properties, currentPage, totalPages }: any) {
   const [selectedLocation, setSelectedLocation] = useState<any>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -37,13 +38,19 @@ export default function MapWrapper({ properties }: any) {
         />
       </div>
 
-      <div className="w-1/2 h-125 overflow-y-auto">
-        <PropertyList
-          properties={properties}
-          onSelect={handleSelect}
-          selectedId={selectedId}
-          onShowMap={handleShowMap}
-        />
+      <div className="w-1/2 flex flex-col">
+        <div className="h-125 overflow-y-auto">
+          <PropertyList
+            properties={properties}
+            onSelect={handleSelect}
+            selectedId={selectedId}
+            onShowMap={handleShowMap}
+          />
+        </div>
+
+        <div className="mt-4 flex justify-center">
+          <Pagination currentPage={currentPage} totalPages={totalPages} />
+        </div>
       </div>
     </div>
   );

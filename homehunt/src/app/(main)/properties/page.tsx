@@ -29,12 +29,11 @@ export default async function PropertiesPage({ searchParams }: Props) {
 
         <Filters />
 
-        <MapWrapper properties={data?.data || []} />
-
-        <Pagination
-          currentPage={data.currentPage}
-          totalPages={data.totalPages}
-        />
+        <MapWrapper 
+        properties={data?.data || []}
+        currentPage={data.currentPage}
+        totalPages={data.totalPages}
+         />
       </div>
     </>
   );
