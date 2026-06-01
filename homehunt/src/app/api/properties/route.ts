@@ -118,7 +118,10 @@ export async function GET(req: Request) {
     //Query object
     let query: any = {};
 
-    if(city) query["location.city"] = city;
+    if(city) query["location.city"] = {
+      $regex: `^${city.trim()}$`,
+      $options: "i",
+    }
 
     if(category) query.category = category;
 
