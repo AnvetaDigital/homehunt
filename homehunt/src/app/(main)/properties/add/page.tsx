@@ -218,83 +218,90 @@ const validateForm = () => {
 };
 
   return (
-    <div className="max-w-xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Add Property</h1>
+    <>
+      <button
+        onClick={() => router.push("/properties")}
+        className="mb-4 mt-3.5 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+        ← Back to Properties
+      </button>
+      <div className="max-w-xl mx-auto p-6">
+        <h1 className="text-2xl font-bold mb-4">Add Property</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          placeholder="Title"
-          className="border p-2 w-full"
-          value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
-        />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            placeholder="Title"
+            className="border p-2 w-full"
+            value={form.title}
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
+          />
 
-        <textarea
-          placeholder="Description"
-          className="border p-2 w-full"
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-        />
+          <textarea
+            placeholder="Description"
+            className="border p-2 w-full"
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+          />
 
-        <input
-          type="number"
-          placeholder="Price"
-          className="border p-2 w-full"
-          value={form.price}
-          onChange={(e) => setForm({ ...form, price: e.target.value })}
-        />
+          <input
+            type="number"
+            placeholder="Price"
+            className="border p-2 w-full"
+            value={form.price}
+            onChange={(e) => setForm({ ...form, price: e.target.value })}
+          />
 
-        <input
-          placeholder="City"
-          className="border p-2 w-full"
-          value={form.city}
-          onChange={(e) => setForm({ ...form, city: e.target.value })}
-        />
+          <input
+            placeholder="City"
+            className="border p-2 w-full"
+            value={form.city}
+            onChange={(e) => setForm({ ...form, city: e.target.value })}
+          />
 
-        <select
-          className="border p-2 w-full"
-          value={form.category}
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
-        >
-          <option value="">Select Category</option>
-          <option value="apartment">Apartment</option>
-          <option value="villa">Villa</option>
-          <option value="plot">Plot</option>
-          <option value="commercial">Commercial</option>
-        </select>
+          <select
+            className="border p-2 w-full"
+            value={form.category}
+            onChange={(e) => setForm({ ...form, category: e.target.value })}
+          >
+            <option value="">Select Category</option>
+            <option value="apartment">Apartment</option>
+            <option value="villa">Villa</option>
+            <option value="plot">Plot</option>
+            <option value="commercial">Commercial</option>
+          </select>
 
-        <input
-          type="file"
-          multiple
-          accept="image/*"
-          onChange={handleImageUpload}
-        />
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleImageUpload}
+          />
 
-        <div className="flex gap-2 flex-wrap">
-          {images.map((img) => (
-            <div key={img.public_id} className="relative">
-              <img src={img.url} className="w-20 h-20 object-cover rounded" />
+          <div className="flex gap-2 flex-wrap">
+            {images.map((img) => (
+              <div key={img.public_id} className="relative">
+                <img src={img.url} className="w-20 h-20 object-cover rounded" />
 
-              <button
-                type="button"
-                onClick={() => handleRemoveImage(img.public_id)}
-                className="absolute top-0 right-0 bg-red-500 text-white px-1 text-xs"
-              >
-                X
-              </button>
-            </div>
-          ))}
-        </div>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveImage(img.public_id)}
+                  className="absolute top-0 right-0 bg-red-500 text-white px-1 text-xs"
+                >
+                  X
+                </button>
+              </div>
+            ))}
+          </div>
 
-        <button
-          disabled={loading}
-          className={`px-4 py-2 text-white ${
-            loading ? "bg-gray-400" : "bg-black"
-          }`}
-        >
-          {loading ? "Submitting..." : "Submit"}
-        </button>
-      </form>
-    </div>
+          <button
+            disabled={loading}
+            className={`px-4 py-2 text-white ${
+              loading ? "bg-gray-400" : "bg-black"
+            }`}
+          >
+            {loading ? "Submitting..." : "Submit"}
+          </button>
+        </form>
+      </div>
+    </>
   );
 }
