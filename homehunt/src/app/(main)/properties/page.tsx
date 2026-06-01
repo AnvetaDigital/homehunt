@@ -2,6 +2,7 @@ import Filters from "@/components/Filters";
 import Pagination from "@/components/Pagination";
 import MapWrapper from "@/components/MapWrapper";
 import User from "@/models/User";
+import Link from "next/link";
 
 type Props = {
   searchParams: Promise<Record<string, string>>;
@@ -19,17 +20,22 @@ export default async function PropertiesPage({ searchParams }: Props) {
   const data = await res.json();
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Properties</h1>
+    <>
+      <Link href="/" className="mb-4 mt-3.5 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+        ← Back to Home
+      </Link>
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-4">Properties</h1>
 
-      <Filters />
+        <Filters />
 
-      <MapWrapper properties={data?.data || []} />
+        <MapWrapper properties={data?.data || []} />
 
-      <Pagination
-        currentPage={data.currentPage}
-        totalPages={data.totalPages}
-      />
-    </div>
+        <Pagination
+          currentPage={data.currentPage}
+          totalPages={data.totalPages}
+        />
+      </div>
+    </>
   );
 }
