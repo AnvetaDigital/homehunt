@@ -9,10 +9,10 @@ export default function PropertyCard({ property, onShowMap, showMapButton = true
     <div className="border rounded-lg p-4 shadow relative hover:scale-105 transition">
 
       <div className="absolute top-2 right-2 text-xl">
-        <FavoriteButton 
-        propertyId={property._id} 
-        initialFavorite={isFavorite}
-        onUnfavorite={onUnfavorite}
+        <FavoriteButton
+          propertyId={property._id}
+          initialFavorite={isFavorite}
+          onUnfavorite={onUnfavorite}
         />
       </div>
 
@@ -22,20 +22,15 @@ export default function PropertyCard({ property, onShowMap, showMapButton = true
         className="w-full h-40 object-cover rounded"
       />
 
-      <h2 className="text-lg font-semibold mt-2">
-        {property.title}
-      </h2>
+      <h2 className="text-lg font-semibold mt-2">{property.title}</h2>
 
-      <p className="text-gray-600">
-        {property.location?.city}
-      </p>
+      <p className="text-gray-600">{property.location?.city}</p>
 
       <p className="font-bold mt-2">
         ₹ {property.price.toLocaleString("en-IN")}
       </p>
 
       <div className="flex gap-3 mt-4">
-
         {/* Action Buttons */}
         <Link href={`/properties/${property._id}`}>
           <button className="bg-blue-600 text-white px-3 py-1 rounded">
@@ -44,12 +39,12 @@ export default function PropertyCard({ property, onShowMap, showMapButton = true
         </Link>
 
         {showMapButton && (
-         <button
-          onClick={() => onShowMap?.(property)}
-          className="bg-gray-200 px-3 py-1 rounded"
-        >
-          Show on Map
-        </button>
+          <button
+            onClick={() => onShowMap?.(property)}
+            className="bg-gray-200 dark:bg-slate-700 text-black dark:text-white px-3 py-1 rounded hover:bg-gray-300 dark:hover:bg-slate-600"
+          >
+            Show on Map
+          </button>
         )}
       </div>
     </div>
