@@ -17,6 +17,7 @@ const PropertySchema = z.object({
   location: z.object({
     city: z.string().min(2),
   }),
+  area: z.number().positive(),
   images: z
     .array(
       z.object({
@@ -56,7 +57,7 @@ export async function POST(req: Request) {
       );
     }
 
-     const { title, description, price, category, location, images } =
+     const { title, description, price, category, location, area, images } =
       parsed.data;
 
       const coords = await getCoordinates(location.city);
@@ -77,6 +78,7 @@ export async function POST(req: Request) {
         city: location.city,
         coordinates: coords,
       },
+      area,
       images,
       listedBy: new mongoose.Types.ObjectId(session.user.id),
     });

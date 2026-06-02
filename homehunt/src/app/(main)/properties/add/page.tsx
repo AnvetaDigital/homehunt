@@ -14,6 +14,7 @@ export default function AddPropertyPage() {
     price: "",
     city: "",
     category: "",
+    area: ""
   });
 
   const [images, setImages] = useState<
@@ -118,6 +119,7 @@ export default function AddPropertyPage() {
       location: {
         city: form.city,
       },
+      area: Number(form.area),
       images,
     };
 
@@ -221,7 +223,8 @@ const validateForm = () => {
     <>
       <button
         onClick={() => router.push("/properties")}
-        className="mb-4 mt-3.5 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+        className="mb-4 mt-3.5 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+      >
         ← Back to Properties
       </button>
       <div className="max-w-xl mx-auto p-6">
@@ -255,6 +258,16 @@ const validateForm = () => {
             className="border p-2 w-full"
             value={form.city}
             onChange={(e) => setForm({ ...form, city: e.target.value })}
+          />
+
+          <input
+            type="number"
+            name="area"
+            value={form.area}
+            onChange={(e) => setForm({ ...form, area: e.target.value })}
+            placeholder="Enter area in sq ft"
+            className="w-full border rounded px-3 py-2"
+            required
           />
 
           <select
