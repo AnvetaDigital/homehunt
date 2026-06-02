@@ -8,7 +8,7 @@ export default function PropertyCard({ property, onShowMap, showMapButton = true
   return (
     <div className="border rounded-lg p-4 shadow relative hover:scale-105 transition">
 
-      <div className="absolute top-2 right-2 text-xl">
+      <div className="absolute text-xl">
         <FavoriteButton
           propertyId={property._id}
           initialFavorite={isFavorite}
